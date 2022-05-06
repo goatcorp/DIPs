@@ -21,13 +21,11 @@ It is currently difficult to know who to ask for help, support or guidance. goat
 
 Six subteams will be created for each area of the ecosystem:
 
-- **Launcher**: development and maintenance of XIVLauncher
-- **Dalamud**: development and maintenance of Dalamud
+- **Launcher**: development, maintenance and code documentation of XIVLauncher
+- **Dalamud**: development, maintenance and code documentation of Dalamud
 - **Linux**: ensures that XIVLauncher and Dalamud work well and/or conveniently on Linux, including the Steam Deck
-- **Documentation**: creation, maintenance and improvement of goatcorp-related documentation, including the FAQs, support guides, and developer documentation.
-  - RFC: DIPs too?
-  - RFC: SamplePlugin et al?
-- **Community**: community relations and support, as well as bringing community feedback to the other teams
+- **Documentation**: creation, maintenance and improvement of goatcorp-related documentation, including the FAQs, support guides, DIPs and developer documentation (for now, including SamplePlugin). Overlap with "Developer Relations" role.
+- **Community**: community relations and support, triaging and pruning issues, as well as bringing community feedback to the other teams
 - **Plugin Approval**: reviewing and approving plugins, and taking the necessary steps to ensure that they are safe
 
 Members can belong to multiple subteams, but they are encouraged to specialise and delegate where possible to ensure continuity of operations.
@@ -65,7 +63,7 @@ Aspects of the goatcorp ecosystem will be entrusted to people who aren't goat, w
 
 These are relatively straightforward teams that formalise community dynamics that we already have. It is relatively conservative in this regard, and should only seek to give names to what we already have.
 
-This RFC does not propose anything further as goatcorp will need to explore this before it attempts anything more.
+This DIP does not propose anything further as goatcorp will need to explore this before it attempts anything more.
 
 If we do not do this, the majority of the governance will remain with goat, which is inherently unscalable, especially as the number of plugins, and devs, grows well into the dozens. Other people are already technically empowered to act on goat's behalf, but generally avoid doing so as they have not been given explicit permission.
 
@@ -79,9 +77,12 @@ This is patterned on the [Rust governance model](https://forge.rust-lang.org/gov
 
 [unresolved-questions]: #unresolved-questions
 
-- Are these the only subteams we want?
+- Are these the only subteams we want?:
+  - Initial consensus: yes, for now.
 - Do we want formal leaders for each subteam?
+  - Initial consensus: no, that's too much administrative overhead. We'll try without leaders for now and see how we go.
 - What comes under the purview of Documentation?
+  - Initial consensus: some developer relations-related responsibilities as well, but code documentation remains with the people writing the code
 - What level of permission do we want to entrust to a subteam member?
 
 # Future possibilities
