@@ -1,6 +1,6 @@
 - Feature Name: Refresh Plugin Installer
 - Start Date: 2022-05-07
-- DIP PR: [goatcorp/DIPs#0000](https://github.com/goatcorp/DIPs/pull/0000)
+- DIP PR: [goatcorp/DIPs#0000](https://github.com/goatcorp/DIPs/pull/28)
 - Repo-Relevant Issue: [goatcorp/dalamud#0000](https://github.com/goatcorp/dalamud/issues/0000)
 
 # Summary
