@@ -127,13 +127,13 @@ and report logs be stored. Upon unsubscribing from the service, all of the reade
 
 The current Reader table schema is as follows:
 
-Constraints|Column|Type|Description
----|---|---|---
-PK|`id`|integer|The record key, used for indexing and references.
-U, N|`github`|varchar(40)|The reader's GitHub username, used for (eventually) highlighting relevant updates.
-U|`email`|varchar(40)|The reader's email address.
-|`report_interval`|interval|The frequency at which the reader should be emailed, if there are updates.
-|`active`|bool|Whether or not emails should be sent to this reader.
+|Constraints|Column|Type|Description|
+|---|---|---|---|
+|PK|`id`|integer|The record key, used for indexing and references.|
+|U, N|`github`|varchar(40)|The reader's GitHub username, used for (eventually) highlighting relevant updates.|
+|U|`email`|varchar(40)|The reader's email address.|
+||`report_interval`|interval|The frequency at which the reader should be emailed, if there are updates.|
+||`active`|bool|Whether or not emails should be sent to this reader.|
 
 ### Report
 
@@ -141,12 +141,12 @@ U|`email`|varchar(40)|The reader's email address.
 
 The current Report table schema is as follows:
 
-Constraints|Column|Type|Description
----|---|---|---
-PK|`id`|integer|The record key, used for indexing and references.
-|`sent_time`|datetime with time zone|The time at which this report was sent.
-FK(Reader.id)|`reader_id`|integer|The reader that this report was sent to.
-|`skipped`|bool|Whether or not this report was skipped for the current interval, as a result of there being no updates.
+|Constraints|Column|Type|Description|
+|---|---|---|---|
+|PK|`id`|integer|The record key, used for indexing and references.|
+||`sent_time`|datetime with time zone|The time at which this report was sent.|
+|FK(Reader.id)|`reader_id`|integer|The reader that this report was sent to.|
+||`skipped`|bool|Whether or not this report was skipped for the current interval, as a result of there being no updates.|
 
 # Drawbacks
 
