@@ -1,6 +1,6 @@
 - Feature Name: Caprine Operator
 - Start Date: 2022-05-07
-- DIP PR: [goatcorp/DIPs#0000](https://github.com/goatcorp/DIPs/pull/0000)
+- DIP PR: [goatcorp/DIPs#29](https://github.com/goatcorp/DIPs/pull/29)
 - Repo-Relevant Issue: [goatcorp/DIPs#25](https://github.com/goatcorp/DIPs/issues/25)
 
 # Summary
