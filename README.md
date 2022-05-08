@@ -210,8 +210,8 @@ consensus and community norms, not impose more structure than necessary.
 
 Unless you explicitly state otherwise, any contribution intentionally
 submitted for inclusion in the work by you shall be licensed as MIT without
-any additional terms or conditions. Additionally, anyontribution submitted
+any additional terms or conditions. Additionally, any contribution submitted
 for inclusion in works affected by a DIP shall be licensed with the same
 license as that of the target work (e.g. contributions made to Dalamud under
-the aegis of a DIP will be licensed as AGPL, as Dalamd is AGPL at time of
+the aegis of a DIP will be licensed as AGPL, as Dalamud is AGPL at time of
 writing.)
