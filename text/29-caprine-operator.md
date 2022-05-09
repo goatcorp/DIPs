@@ -29,15 +29,16 @@ Currently (as a prototype), Caprine Operator supports reporting updates for the 
 process requires repository moderators to perform the following steps:
 1. Identify that a pull request has been opened.
 2. Determine if the pull request is an update to an existing plugin, or a new plugin.
-3. Check that all of the key manifest fields are set, including the name, internal name, description, punchline, and repository URL.
-4. Check that if icons or images are included in the manifest, they point to actual images.
-5. Check that the zip structure is correct, and that the zipped manifest matches the manifest committed outside of the zip.
-6. If the pull request is for a new plugin, add the `new plugin` label to the pull request.
-7. Perform a code review of the plugin, and add the `code reviewed` label to the pull request.
-8. Perform a rules review of the plugin, and add the `rules reviewed` label to the pull request.
-9. A core review team member will merge the plugin, provided that a majority of the core review team agrees to its addition.
+3. Check that testing plugins have [Testing] in their titles.
+4. Check that all of the key manifest fields are set, including the name, internal name, description, punchline, and repository URL.
+5. Check that if icons or images are included in the manifest, they point to actual images.
+6. Check that the zip structure is correct, and that the zipped manifest matches the manifest committed outside of the zip.
+7. If the pull request is for a new plugin, add the `new plugin` label to the pull request.
+8. Perform a code review of the plugin, and add the `code reviewed` label to the pull request.
+9. Perform a rules review of the plugin, and add the `rules reviewed` label to the pull request.
+10. A core review team member will merge the plugin, provided that a majority of the core review team agrees to its addition.
 
-Through its emails (henceforth referred to as reports), Caprine Operator streamlines steps 1, 6, 7, and 8 of this process.
+Through its emails (henceforth referred to as reports), Caprine Operator streamlines steps 1, 7, 8, and 9 of this process.
 Caprine Operator will show the pull request in an update report, along with its labels, so that subscribers (henceforth
 referred to as readers) can see at a glance what the state of the pull request is. When a label is added, this will update
 the `updated` timestamp on the pull request in the GitHub API, which will cause it to show up in the Operator's reports,
