@@ -21,7 +21,7 @@ The plugin installer code base is known to be messy due to significant enhanceme
 
 The following code improvements will be made:
 - Simplify code (many redundant methods, classes, etc.)
-- Abstract out logic that has crept into the imgui windows overtime.
+- Abstract out logic from plugin installer window back into plugin manager and service classes.
 
 The following new features will be added:
 - Add toggles for plugins.
@@ -31,6 +31,7 @@ The following new features will be added:
 - Provide more info on plugin behavior.
 - Reorganize existing layout.
 - Allow setting individual plugins to use testing versions (rather than all or nothing).
+- Allow disabling without uninstalling.
 
 # Reference-level explanation
 
