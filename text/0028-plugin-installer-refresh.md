@@ -32,6 +32,7 @@ The following new features will be added:
 - Reorganize existing layout.
 - Allow setting individual plugins to use testing versions (rather than all or nothing).
 - Allow disabling without uninstalling.
+- Ensure is controller friendly.
 
 # Reference-level explanation
 
