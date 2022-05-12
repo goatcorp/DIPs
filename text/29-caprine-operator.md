@@ -192,5 +192,6 @@ The current Report table schema is as follows:
 [future-possibilities]: #future-possibilities
 
 * Expansion to other repositories, as noted above.
-* Discord integration, if we can figure out how to do that reliably given how unstructured Discord is.
-* Report channels, so that once further repository integration is implemented, we can opt into specific repositories for updates.
+* Discord channel-reading, if we can figure out how to do that reliably given how unstructured Discord is.
+* Report channels (in the pub/sub sense), so that once further repository integration is implemented, we can opt into specific repositories for updates.
+* A Discord notification channel, for people who don't use email and don't like the GitHub webhook.
