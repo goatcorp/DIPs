@@ -178,6 +178,7 @@ The current Report table schema is as follows:
 
 * Our Discord webhook is nice, but all of our repository updates are sent to a single channel, which makes it easy to miss things for specific repositories. Additionally, it can't update when labels are added to pull requests and issues.
 * If I set desktop notifications on the webhook channel, they get filtered into the notification manager on Windows. However, that's too cramped for at-a-glance reading, and is subject to the other restrictions of Discord webhooks, too.
+* Other projects have similar systems, but they're based on GitHub Actions, which are a bit clunkier to work with.
 
 # Unresolved questions
 
