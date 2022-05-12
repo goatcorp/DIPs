@@ -47,7 +47,7 @@ signalling to readers that it should be checked again.
 The email will also show any problems with the pull request in a separate table column.
 
 A sample email at the time of writing is shown below:
-![](https://raw.githubusercontent.com/goatcorp/operator/3c20cf7c45c7bd9180a8245acef8b62bd993f898/assets/email.png "Sample email from Caprine Operator")
+![](https://raw.githubusercontent.com/goatcorp/operator/bf2fe5110833d85e068c91ea680213aaf7e58b29/assets/email.png "Sample email from Caprine Operator")
 
 Disregarding the egregious contrast between the `code reviewed` label and the Mac OS Mail dark background, this should show what
 reports will look like. The title column is linked to the pull request for quick navigation, and colored labels are also shown to
@@ -106,9 +106,9 @@ This is the technical portion of the DIP. Explain the design in sufficient detai
 
 The section should return to the examples given in the previous section, and explain more fully how the detailed proposal makes those examples work.
 
-This section is based on [goatcorp/operator](https://github.com/goatcorp/operator) at commit [3c20cf7c45c7bd9180a8245acef8b62bd993f898](https://github.com/goatcorp/operator/tree/3c20cf7c45c7bd9180a8245acef8b62bd993f898).
+This section is based on [goatcorp/operator](https://github.com/goatcorp/operator) at commit [bf2fe5110833d85e068c91ea680213aaf7e58b29](https://github.com/goatcorp/operator/tree/bf2fe5110833d85e068c91ea680213aaf7e58b29).
 
-Caprine Operator has its source code stored in the [goatcorp/operator](https://github.com/goatcorp/operator/tree/3c20cf7c45c7bd9180a8245acef8b62bd993f898) repository. It is written in
+Caprine Operator has its source code stored in the [goatcorp/operator](https://github.com/goatcorp/operator/tree/bf2fe5110833d85e068c91ea680213aaf7e58b29) repository. It is written in
 the Go programming language, and uses PostgreSQL as its database. The repository contains Docker configuration files for portable execution.
 These Docker files are for development and deployment only; readers need only subscribe to the service to use it. Currently, Caprine Operator
 uses Outlook as its email provider; this decision has been made for several reasons:
