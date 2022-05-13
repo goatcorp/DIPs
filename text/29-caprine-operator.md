@@ -38,13 +38,14 @@ process requires repository moderators to perform the following steps:
 9. Perform a rules review of the plugin, and add the `rules reviewed` label to the pull request.
 10. A core review team member will merge the plugin, provided that a majority of the core review team agrees to its addition.
 
-Through its emails (henceforth referred to as reports), Caprine Operator streamlines steps 1, 4, 5, 6, 7, 8, and 9 of this process.
+Through its emails (henceforth referred to as reports), Caprine Operator streamlines the enirety of this process.
 Caprine Operator will show the pull request in an update report, along with its labels, so that subscribers (henceforth
 referred to as readers) can see at a glance what the state of the pull request is. When a label is added, this will update
 the `updated` timestamp on the pull request in the GitHub API, which will cause it to show up in the Operator's reports,
 signalling to readers that it should be checked again.
 
-The email will also show any problems with the pull request in a separate table column.
+The email will also show any problems with the pull request in a separate table column. The problems that the Operator looks for
+include untagged test plugins, missing key manifest fields, and matching metadata files inside and outside of the plugin zip.
 
 A sample email at the time of writing is shown below:
 ![](https://raw.githubusercontent.com/goatcorp/operator/bf2fe5110833d85e068c91ea680213aaf7e58b29/assets/email.png "Sample email from Caprine Operator")
