@@ -38,7 +38,7 @@ Members can belong to multiple subteams, but they are encouraged to specialise a
 
 The initial members of each subteam will be as follows:
 
-- **Launcher**: goat, kizer
+- **Launcher**: goat, kizer, Marzent
 - **Dalamud**: goat, daemitus, Aireil, Caraxi
 - **Unix**: ashkitten, Caliel666, Centzilius, Marzent, Dormanil, Helios747, Zips
 - **Documentation**: Franz, Philpax, kal
