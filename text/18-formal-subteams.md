@@ -95,4 +95,5 @@ This is patterned on the [Rust governance model](https://forge.rust-lang.org/gov
 
 [future-possibilities]: #future-possibilities
 
-We could potentially develop policies around how to join a subteam, so that people interested in participating know how to start.
+- We could potentially develop policies around how to join a subteam, so that people interested in participating know how to start.
+  - A Discord bot could be used for this to vet people's applications, [as suggested by ArcaneDisgea](https://github.com/goatcorp/DIPs/pull/18#discussion_r880978776).
