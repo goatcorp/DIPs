@@ -1,7 +1,6 @@
 - Feature Name: Formal Subteams
 - Start Date: 2022-05-03
 - DIP PR: [goatcorp/DIPs#18](https://github.com/goatcorp/DIPs/pull/18)
-- Repo-Relevant Issue: [goatcorp/dalamud#0000](https://github.com/goatcorp/dalamud/issues/0000)
 
 # Summary
 
@@ -26,7 +25,7 @@ Eight subteams will be created for each area of the ecosystem:
 - **Unix**: ensures that XIVLauncher and Dalamud work well and/or conveniently on Linux and macOS, including the Steam Deck
 - **Documentation**: creation, maintenance and improvement of goatcorp-related documentation, including the FAQs, support guides, DIPs and developer documentation (for now, including SamplePlugin). Does not handle documentation within goatcorp code, but may document code intended for other people (e.g. plugin developers.)
 - **Moderation**: interacting with users and ensuring that they respect the sanctity of the Goat Place
-- **Community**: community relations and support, triaging and pruning issues, as well as bringing community feedback to the other teams. explicitly *not* moderation.
+- **Community**: community relations and support, triaging and pruning issues, as well as bringing community feedback to the other teams. explicitly _not_ moderation.
 - **Plugin Approval**: reviewing and approving plugins, and taking the necessary steps to ensure that they are safe
 - **Reverse Engineering**: people who are particularly good at reversing the game and can be consulted for assistance or guidance
 
