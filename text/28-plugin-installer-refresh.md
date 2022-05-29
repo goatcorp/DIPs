@@ -33,6 +33,7 @@ The following new features will be added:
 - Allow setting individual plugins to use testing versions (rather than all or nothing).
 - Allow disabling without uninstalling.
 - Ensure is controller friendly.
+- Add plugin manifest localization.
 
 # Reference-level explanation
 
@@ -49,12 +50,15 @@ Feature: Add toggles for plugins
 
 Feature: Provide more info on plugin behavior
 - Start with manually reporting for now.
+- Show if plugin modifies the native ui (for streamers).
 - This can be enhanced to check imports and more.
 
 Feature: Reorganize existing layout
 - Dalamud and plugin change logs could be separated.
 - Some plugin installer settings could be easier to access from the installer window.
 
+Feature: Localize Plugin Meta Data
+- Show punchline, description and other in dalamud language if provided in manifest.
 
 # Drawbacks
 
