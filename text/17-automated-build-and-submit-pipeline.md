@@ -1,7 +1,7 @@
 - Feature Name: Automated Build and Submit Pipeline
 - Start Date: 2022-05-03
 - DIP PR: [goatcorp/DIPs#17](https://github.com/goatcorp/DIPs/pull/17)
-- Repo-Relevant Issue: [goatcorp/dalamud#0000](https://github.com/goatcorp/dalamud/issues/0000)
+- Repo-Relevant Milestone: <https://github.com/goatcorp/Dalamud/milestone/1>
 
 # Summary
 
@@ -46,7 +46,7 @@ commit = "9ef08248497c7f9f1312e14c50650183ee365734882a655345fc06abdac511f1"
 # The people authorised to update this manifest (e.g. who can deploy updates).
 # Usernames can be specified here, but will be automatically converted to GitHub user IDs.
 owners = [
-    707827, // Philpax
+    707827, # Philpax
 ]
 # Optional: where your project/csproj is located within the repository.
 # If empty or unspecified, it will be assumed the project is in the root of the repository.
@@ -69,7 +69,7 @@ but they will be automatically converted to GitHub user IDs before being merged 
 
 ```toml
 owners = [
-    707827, // Philpax
+    707827, # Philpax
 ]
 ```
 
@@ -102,6 +102,8 @@ This change would result in a new section being added to all `csproj`s that choo
 </ProjectExtensions>
 ```
 
+(Note that the `IconUrl` obeys current rules for asset URLs. More work might be done on this in the future.)
+
 When submitting a plugin for the first time, the developer creates the file with the relevant details filled in, and creates a PR. A GitHub Action will retrieve the repository at the specified commit, attempt to build it through the GitHub Actions server pool, package it with DalamudPackager, and produce an artifact that can be downloaded and loaded into Dalamud for testing by a goatcorp plugin reviewer. If accepted, the PR is merged, and the artifact is deployed to DalamudPlugins.
 
 When a new version of a manifest is merged, a GitHub Action will build the repository through the GitHub Actions server pool, as with initial submission, and the resulting artifact will be deployed to DalamudPlugins automatically. The developer does not need to do anything after the manifest update has been merged.
@@ -118,12 +120,12 @@ The primary role of the action is to consume a plugin manifest (that is, a `plug
 
 The `csproj` file should describe how to build the plugin. There may be cursory automated checking of the `csproj` to ensure that it is not doing anything malicious, but the primary verification strategy will still be human review. One of the checks will be to ensure that there are no `DalamudPackager` steps that will run on the CI itself, as to prevent double-packaging.
 
-The project will be built with the version of Dalamud appropriate for the channel that is being submitted to. In most cases, this will be the latest publicly released Dalamud, but e.g. the `net6` channel may be built with a Dalamud with .NET6 compatibility, so that testers can easily test plugins for that branch. All other dependencies will be built or sourced from NuGet as appropriate.
+The project will be built with the version of Dalamud appropriate for the channel that is being submitted to. In most cases, this will be the latest publicly released Dalamud, but e.g. the `net6` channel may be built with a Dalamud with .NET6 compatibility, so that testers can easily test plugins for that branch. All other dependencies will be built or sourced from NuGet as appropriate, including recursively pulling down submodules.
 
-Developers will be encouraged to add a conditional step that will not be run on the CI to their `csproj` to run DalamudPackager. In this step, it will be running in a mode where it will output a generated manifest JSON and any files required for the plugin to an output folder, so that developers can easily test their changes and have an experience equivalent to the CI. They're also welcome to continue to build the full ZIP artifacts for second-party and third-party deployments. Note that this is not mandatory, as you can keep locally bundling the DLL and your own JSON if you _really_ want.
+Developers will be encouraged to add a conditional step that will not be run on the CI to their `csproj` to run DalamudPackager. In this step, it will be running in a mode where it will output a generated manifest JSON and any files required for the plugin to an output folder, so that developers can easily test their changes and have an experience equivalent to the CI. They're also welcome to continue to build the full ZIP artifacts for second-party and third-party deployments. Note that this is not mandatory, as you can keep locally bundling the DLL and your own JSON if you _really_ want. DalamudPackager will be changed to make this workflow as comfortable as possible, including not building on CI by default.
 
 ```xml
-<Target Name="PackagePlugin" AfterTargets="Build" Condition="!$(DefineConstants.Contains(DalamudCI))">
+<Target Name="PackagePlugin" AfterTargets="Build">
     <DalamudPackager
         ProjectDir="$(ProjectDir)"
         OutputPath="$(OutputPath)"
@@ -148,6 +150,8 @@ Finally, build successes and/or failures will be published to the #github Discor
 This will require all first-party plugin developers to abide by a common project structure that is amenable to being built by CI, and for the code of their plugins to be open-source. The latter is already true, but the former may be a difficult requirement, especially with some of the complex build arrangements that existing plugins use. Upon preliminary exploration, it seems like this should be possible, but we'll need to check in with more developers.
 
 As a whole, it is likely this will require an ecosystem-wide migration, at least for first-party plugins. This will be quite painful and require many people to update their plugins to match a standardised format and build process. This can be mitigated by making it a gradual migration, and supporting the traditional method of submission for some time (next API version or the version after that?). This could potentially be assisted by [DIP#26](https://github.com/goatcorp/DIPs/issues/26).
+
+There are closed-source plugins, like Sonar, that are not compatible with this model. For the time being, they will continue to submit to DalamudPlugins. This may be revisited at a later stage.
 
 # Rationale and alternatives
 
