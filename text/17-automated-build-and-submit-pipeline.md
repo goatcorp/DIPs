@@ -151,7 +151,7 @@ This will require all first-party plugin developers to abide by a common project
 
 As a whole, it is likely this will require an ecosystem-wide migration, at least for first-party plugins. This will be quite painful and require many people to update their plugins to match a standardised format and build process. This can be mitigated by making it a gradual migration, and supporting the traditional method of submission for some time (next API version or the version after that?). This could potentially be assisted by [DIP#26](https://github.com/goatcorp/DIPs/issues/26).
 
-There are closed-source plugins, like Sonar, that are not compatible with this model. For the time being, they will continue to submit to DalamudPlugins. This may be revisited at a later stage.
+There are closed-source plugins and plugins with build secrets, like Sonar and PaissaHouse, that are not compatible with this model. For the time being, they will continue to submit to DalamudPlugins. This may be revisited at a later stage.
 
 # Rationale and alternatives
 
@@ -262,3 +262,4 @@ This would form the backbone of any future CI we do around plugin submission. Id
   - This is pretty hard to verify when unsafe code is enabled, as all bets are off. This would be a relatively coarse check to make sure that there isn't anything _immediately_ suspect.
   - This is not an immediate problem as the plugin security model is currently too open to allow for it, anyway. It's something we can revisit in a future DIP.
 - This RFC does not currently describe a way to disable a plugin. The metadata structure could be extended with an `enabled: bool` that will govern whether or not the plugin is blacklisted, thus allowing both goatcorp and plugin developers to blacklist plugins with ease.
+- This RFC does not address automated building and deployment for plugins with hidden source or secrets, which will continue to submit to DalamudPlugins. This should be addressed at some point to allow plugins under these categories to submit. The current solution in mind for secrets is for the secret to be provided to goatcorp, who will then supply it to the GitHub runner, but this requires more thought. For hidden source plugins, we may ask developers to provide access to their repository for the buildbot, but we will need to ensure that this is done securely.
