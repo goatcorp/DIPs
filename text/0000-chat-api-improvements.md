@@ -1,6 +1,6 @@
 - Feature Name: Chat API Improvements
 - Start Date: 2022-06-03
-- DIP PR: TBD
+- DIP PR: [DIPs/39](https://github.com/goatcorp/DIPs/pull/39)
 - Repo-Relevant Issue: TBD
 
 # Summary
