@@ -1,7 +1,7 @@
 - Feature Name: Chat API Improvements
 - Start Date: 2022-06-03
-- DIP PR: [goatcorp/DIPs#0000](https://github.com/goatcorp/DIPs/pull/0000)
-- Repo-Relevant Issue: [goatcorp/dalamud#0000](https://github.com/goatcorp/dalamud/issues/0000)
+- DIP PR: TBD
+- Repo-Relevant Issue: TBD
 
 # Summary
 
@@ -13,20 +13,19 @@ Add functionality to Dalamud's `ChatGui` API that lets callers and subscribers m
 
 [motivation]: #motivation
 
-Currently, users cannot easily know from where chat messages that are received in raised events originate.  This can cause issues where messages printed to the chat log from plugins are handled in an undesirable way.  Furthermore, the `senderId` in current API functions and events is not actually the sender, creating confusion.  Within Dalamud's API itself (i.e., not custom hooks), here is currently no way to discern the sender of a message (or set the sender for a user's message).
+Currently, users cannot easily know from where chat messages that are received in raised events originate.  This can cause issues where messages printed to the chat log from plugins are handled in an undesirable way.  Furthermore, the `senderId` in current API functions and events is not actually related to the sender, creating confusion.  Within Dalamud's API itself (i.e., not custom hooks), here is currently no way to discern the sender of a message (or set the sender for an API user's message).
 
 # Guide-level explanation
 
 [guide-level-explanation]: #guide-level-explanation
 
-Current Behavior:
+### Current Behavior:
 - When a user wants to be notified of chat messages and potentially intercept or alter them, they subscribe to one of the events defined by Dalamud's `ChatGui` API (`ChatMessage`, `CheckMessageHandled`, `ChatMessageHandled`, and `ChatMessageUnhandled`).
 - These events will be raised when an appropriate message is written to the game's chat log (or handled by another subscriber, as appropriate).  The subscriber receives, depending on the event type, some combination of the chat channel, message sender's name, the message itself, the message's timestamp[^1], and a `ref` flag to indicate whether Dalamud should propagate the message any further.
 - The subscriber can, as appropriate to the event type, alter these parameters, prevent the message from propagating, and execute their own logic based on what they are given.
 - When using the `ChatGui` API, a user can also send their own messages to be printed to the chat log (`PrintChat`, `Print`, and `PrintError`).  These can, essentially, include the same parameters as those found in the events (sender name, message, and timestamp[^1]).
 
-
-Proposed changes:
+### Proposed changes:
 - The API would retain the same broad functionality as currently exists; users would be able to subscribe to the same message events, and be able to send their own chat log messages.  The differences are primarily in the information exposed to and controlled by the user:
 	- The timestamp parameter[^1] would be renamed to properly indicate its purpose.  It would also be made a `ref` in the events so that event handlers could alter it (most won't, but I see little reason to restrict this when it may be useful in rare cases).
 	- A parameter would be added to the chat events that indicates the source of the message (game, Dalamud, or plugin), with which subscribers can inform their decisions about handling the message.  A supplemental parameter would be added with the `InternalName` of the plugin for plugin-originating messages.
@@ -34,14 +33,14 @@ Proposed changes:
 - A new function would be added to set the content ID and world of a specific message's sender.  This is required for some context menu items to work when clicking on a message sender in the game's chat log.[^4].
 
 
-Examples:
+### Examples:
 
 This event subscriber as currently exists
 
 ```csharp
 private void OnChatMessage( XivChatType type, UInt32 senderId, ref SeString sender, ref SeString message, ref bool isHandled )
 {
-	//	Change the message contents.  This catches all messages, even ones we might not want to alter.
+    //  Change the message contents.  This catches all messages, even ones we might not want to alter.
 }
 ```
 
@@ -50,9 +49,9 @@ would become
 ```csharp
 private void OnChatMessage( XivChatType type, ref UInt32 timestamp, ref SeString sender, ref SeString message, XivChatSource source, string sourceName, ref bool isHandled )
 {
-	if( source == XivChatSource.Plugin && sourceName == "SuperImportantPlugin_DoNotChangeMessages" ) return;
+    if( source == XivChatSource.Plugin && sourceName == "SuperImportantPlugin_DoNotChangeMessages" ) return;
 	
-	//	Change the message contents.  We can now exclude messages from sources that should not be altered.
+    //  Change the message contents.  We can now exclude messages from sources that should not be altered.
 }
 ```
 
@@ -61,10 +60,10 @@ Sending a chat message as currently exists
 ```csharp
 var chatEntry = new XivChatEntry
 {
-	Type = XivChatType.Say,
-	Name = "Bob Loblaw",		//	Player link payloads omitted for clarity
-	SenderId = bobsObjectID,	//	[^1]
-	Message = Translate( "Check out my cool law blog!" ),
+    Type = XivChatType.Say,
+    Name = "Bob Loblaw",	//  Player link payloads omitted for clarity.
+    SenderId = bobsObjectID,	//  See footnote 1.
+    Message = Translate( "Check out my cool law blog!" ),
 };
 
 mChatGui.PrintChat( chatEntry );
@@ -75,16 +74,16 @@ could become
 ```csharp
 var chatEntry = new XivChatEntry
 {
-	Type = XivChatType.Say,
-	Name = "Bob Loblaw",		//	Player link payloads omitted for clarity
-	Timestamp = 0,				//	A value of zero makes the timestamp automatic.
-	Message = Translate( "Check out my cool law blog!" ),
+    Type = XivChatType.Say,
+    Name = "Bob Loblaw",	//  Player link payloads omitted for clarity.
+    Timestamp = 0,		//  A value of zero makes the timestamp automatic.
+    Message = Translate( "Check out my cool law blog!" ),
 };
 
-//	The callback makes all of the context menu items work on Bob's name in the message we just printed.
+//  The callback makes all of the context menu items work on Bob's name in the message we just printed.
 UInt32 messageIndex = mChatGui.PrintChat( chatEntry, msgIndex =>
 {
-	SetContentIDForMessage( bobsContentID, msgIndex, bobsServerID, XivChatType.Say );
+    SetContentIDForMessage( bobsContentID, msgIndex, bobsServerID, XivChatType.Say );
 } );
 ```
 
@@ -98,7 +97,7 @@ UInt32 messageIndex = mChatGui.PrintChat( chatEntry, msgIndex =>
 - The majority of the logic in `ChatGui.HandlePrintMessageDetour` is split into a new function, with parameters for the chat message source.
 - The hook that redirected to that function will now redirect to a small function that calls the new `HandlePrintMessageDetour` with a message source of "Game".
 - The other `ChatGui` message printing functions will place messages into the queue with with the appropriate message source parameter(s), which will call the new `HandlePrintMessageDetour` function with those parameters.  Most likely, there will be both internal and external versions of the message queueing functions so that plugins cannot impersonate or otherwise abuse the message source.
-- When queueing a message to be printed, the user can provide a callback that receives the message index once printed.
+- When queueing a message to be printed, the user can provide a callback that receives the message index once printed (since it is returned by the game function that prints to log).
 
 # Drawbacks
 
@@ -139,6 +138,6 @@ As this is a fairly narrowly scoped DIP, the intent is to ensure that the change
 
 
 [^1]: This timestamp is currently called senderId in the API, leading to some confusion.  See [Dalamud PR #865](https://github.com/goatcorp/Dalamud/pull/865).
-[^2]: This is the `UInt32` index of the message in the game's log, and is used for some log-related game functions.  See the Reference-level explanation below for more information.
-[^3]: It is unclear whether returning a message index is desirable for `Print` and `PrintError`, since those are simpler functions.  I don't personally see a drawback to providing the information to the caller though.
-[^4]: This may have the potential to be dangerous if misused.  See Drawbacks and Unresolved questions below.
+[^2]: This is the `UInt32` index of the message in the game's log, and is used for some log-related game functions.  See the Reference-level explanation for more information.
+[^3]: It is unclear whether providing a message index to the caller is desirable for `Print` and `PrintError`, since those are simpler functions.  I don't personally see a drawback to allowing the caller to get that information if they want it, though.
+[^4]: This may have the potential to be dangerous if misused.  See Drawbacks and Unresolved questions.
