@@ -1,7 +1,7 @@
-- Feature Name: (fill me in with a unique ident, `my_awesome_feature`)
-- Start Date: (fill me in with today's date, YYYY-MM-DD)
+- Feature Name: Bleatbot
+- Start Date: 2022-06-11
 - DIP PR: [goatcorp/DIPs#41](https://github.com/goatcorp/DIPs/pull/41)
-- Repo-Relevant Issue: [goatcorp/dalamud#0000](https://github.com/goatcorp/dalamud/issues/0000)
+- Repo-Relevant Issue: [goatcorp/DIPs#37](https://github.com/goatcorp/DIPs/issues/37)
 
 # Summary
 
