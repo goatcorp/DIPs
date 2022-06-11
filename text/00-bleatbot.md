@@ -1,6 +1,6 @@
 - Feature Name: (fill me in with a unique ident, `my_awesome_feature`)
 - Start Date: (fill me in with today's date, YYYY-MM-DD)
-- DIP PR: [goatcorp/DIPs#0000](https://github.com/goatcorp/DIPs/pull/0000)
+- DIP PR: [goatcorp/DIPs#41](https://github.com/goatcorp/DIPs/pull/41)
 - Repo-Relevant Issue: [goatcorp/dalamud#0000](https://github.com/goatcorp/dalamud/issues/0000)
 
 # Summary
