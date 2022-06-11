@@ -27,7 +27,8 @@ In the comments of a issue/pull request on a goatcorp GitHub repository, members
 
 - `@bleatbot faq <entry>` - Post an FAQ entry.
 - `@bleatbot autoClose <when>` - Automatically close an issue after the specified time (e.g `24h`).
-- `bleatbot autoMerge <when>` - Automatically merge a pull request after the specified time (e.g. `24h`).
+- `@bleatbot autoMerge <when>` - Automatically merge a pull request after the specified time (e.g. `24h`).
+- `@bleatbot cancelAuto` - Cancel any automatic tasks.
 
 TODO
 
