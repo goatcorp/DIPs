@@ -26,9 +26,9 @@ There are many problems with GitHub issues:
 In the comments of a issue/pull request on a goatcorp GitHub repository, members of the goatcorp GitHub group can execute any of the following commands:
 
 - `@bleatbot faq <entry>` - Post an FAQ entry.
-- `@bleatbot autoClose <when>` - Automatically close an issue after the specified time (e.g `24h`).
-- `@bleatbot autoMerge <when>` - Automatically merge a pull request after the specified time (e.g. `24h`).
-- `@bleatbot cancelAuto` - Cancel any automatic tasks.
+- `@bleatbot autoclose <when>` - Automatically close an issue after the specified time (e.g `24h`).
+- `@bleatbot automerge <when>` - Automatically merge a pull request after the specified time (e.g. `24h`).
+- `@bleatbot cancel` - Cancel any automatic tasks.
 
 TODO
 
