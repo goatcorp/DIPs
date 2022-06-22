@@ -104,7 +104,7 @@ This change would result in a new section being added to all `csproj`s that choo
 
 (Note that the `IconUrl` obeys current rules for asset URLs. More work might be done on this in the future.)
 
-When submitting a plugin for the first time, the developer creates the file with the relevant details filled in, and creates a PR. A GitHub Action will retrieve the repository at the specified commit, attempt to build it through the GitHub Actions server pool, package it with DalamudPackager, and produce an artifact that can be downloaded and loaded into Dalamud for testing by a goatcorp plugin reviewer. If accepted, the PR is merged, and the artifact is deployed to DalamudPlugins.
+When submitting a plugin for the first time, the developer creates the file with the relevant details filled in, and creates a PR. A GitHub Action will retrieve the repository at the specified commit, attempt to build it through the GitHub Actions server pool and produce an artifact (using the DalamudPackager build step) that can be downloaded and loaded into Dalamud for testing by a goatcorp plugin reviewer. If accepted, the PR is merged, and the artifact is deployed to DalamudPlugins.
 
 When a new version of a manifest is merged, a GitHub Action will build the repository through the GitHub Actions server pool, as with initial submission, and the resulting artifact will be deployed to DalamudPlugins automatically. The developer does not need to do anything after the manifest update has been merged.
 
@@ -114,15 +114,15 @@ When updating a plugin, the developer merely needs to update the `commit` for th
 
 [reference-level-explanation]: #reference-level-explanation
 
-With the initial submission, proposed updates or final deployment, the GitHub Action, currently planned to execute on GitHub's CI servers, will pull down the `repository` and build the `csproj` located within `location` (or the root) at the specified `commit`. This Action will only run if it is a new submission, or if an update is being made by someone who is already on the `owners` list of the existing manifest. This code is then automatically packaged with DalamudPackager, with the `plugin.json` (formerly `$plugin_name.json`) being generated using metadata drawn from the `csproj`, and this is used to produce an artifact. This artifact is then made available for download, and upon merging of the PR, the artifact is deployed to the `DalamudPlugins` repository. This build process could be later extended to feature additional verification steps (see [future-possibilities]).
+With the initial submission, proposed updates or final deployment, the GitHub Action, currently planned to execute on GitHub's CI servers, will pull down the `repository` and build the `csproj` located within `location` (or the root) at the specified `commit`. This Action will only run if it is a new submission, or if an update is being made by someone who is already on the `owners` list of the existing manifest. This code is then built and automatically packaged (using the DalamudPackager build step), with the `plugin.json` (formerly `$plugin_name.json`) being generated using metadata drawn from the `csproj`, and this is used to produce an artifact. This artifact is then made available for download, and upon merging of the PR, the artifact is deployed to the `DalamudPlugins` repository. This build process could be later extended to feature additional verification steps (see [future-possibilities]).
 
 The primary role of the action is to consume a plugin manifest (that is, a `pluginname.toml` in the manifests repo), and produce an artifact that can be loaded by Dalamud, or be included within `DalamudPlugins`. `DalamudPlugins` will only be updated on deployment (e.g. committing of the manifest file to the `master` branch in the repository); it will not be updated otherwise, so there is no risk of the CI accidentally committing an incomplete plugin to the masterlist.
 
-The `csproj` file should describe how to build the plugin. There may be cursory automated checking of the `csproj` to ensure that it is not doing anything malicious, but the primary verification strategy will still be human review. One of the checks will be to ensure that there are no `DalamudPackager` steps that will run on the CI itself, as to prevent double-packaging.
+The `csproj` file should describe how to build the plugin. There may be cursory automated checking of the `csproj` to ensure that it is not doing anything malicious, but the primary verification strategy will still be human review.
 
 The project will be built with the version of Dalamud appropriate for the channel that is being submitted to. In most cases, this will be the latest publicly released Dalamud, but e.g. the `net6` channel may be built with a Dalamud with .NET6 compatibility, so that testers can easily test plugins for that branch. All other dependencies will be built or sourced from NuGet as appropriate, including recursively pulling down submodules.
 
-Developers will be encouraged to add a conditional step that will not be run on the CI to their `csproj` to run DalamudPackager. In this step, it will be running in a mode where it will output a generated manifest JSON and any files required for the plugin to an output folder, so that developers can easily test their changes and have an experience equivalent to the CI. They're also welcome to continue to build the full ZIP artifacts for second-party and third-party deployments. Note that this is not mandatory, as you can keep locally bundling the DLL and your own JSON if you _really_ want. DalamudPackager will be changed to make this workflow as comfortable as possible, including not building on CI by default.
+Developers should add a DalamudPackager step to their `csproj`. It will generate an archive containing a generated manifest JSON, any dependencies, and the plugin itself. This archive can be loaded directly by Dalamud (especially for dev plugins - no more loading the DLL separate from the manifest), and is the artifact produced by the CI and submitted to DalamudPlugins. DalamudPackager will be changed to make this workflow as comfortable as possible. This will necessitate making the use of DalamudPackager mandatory, so we should ensure that we solve any usability troubles people have with it.
 
 ```xml
 <Target Name="PackagePlugin" AfterTargets="Build">
@@ -130,14 +130,11 @@ Developers will be encouraged to add a conditional step that will not be run on 
         ProjectDir="$(ProjectDir)"
         OutputPath="$(OutputPath)"
         AssemblyName="$(AssemblyName)"
-        MakeZip="false"
     />
 </Target>
 ```
 
-The CI will not use this build step. Instead, it will build the project as per normal, but ignore the packaging step, and will then run DalamudPackager itself to package up the resulting output. This is done to allow easy migration over to this system (you don't need to include the packaging step if you don't want to), as well as ensuring that the build and packager are equally trusted.
-
-Developers are also encouraged to ensure that the `csproj` is only responsible for building the plugin, and does not build anything unrelated. This may require developers to partition their project, or use a conditional build step similar to the one described above. Additionally, if the plugin has a build-time dependency on something, it is best if that dependency is built ahead of time and the result committed to the repository, as the CI will not be able to build the dependency.
+Developers are also encouraged to ensure that the `csproj` is only responsible for building the plugin, and does not build anything unrelated (normal dependencies are fine). This may require developers to partition their project, or use a conditional build step. Additionally, if the plugin has a build-time dependency on a non-.NET build (e.g. JavaScript assets), it is best if that dependency is built ahead of time and the result committed to the repository, as the CI will not be able to build it.
 
 To encourage CI compatibility, as well as making it easier to test, a goatcorp-blessed GitHub Action will be made available that plugin developers can include as part of their repository. This action will build the package, similarly to how the CI would do it, so that developers can test locally with [act](https://github.com/nektos/act) or similar. This action will be made part of the existing plugin samples/templates, so that a user creating a new plugin will be automatically ready to go with CI. This action should be the same as the action run by the CI, or as close as possible.
 
@@ -189,8 +186,8 @@ For a new developer, the workflow should look something like this:
 - A new user clones SamplePlugin or an equivalent that has already been preconfigured to operate within this system, with the inclusion of an appropriately-configured `csproj`
 - They write some code, hack away, and get to a state they're happy with
 - They update the `csproj` with all of their plugin information
-- They build, and assuming they've kept the local `DalamudPackager` step, a folder containing the plugin manifest, as well as the DLL and dependencies is generated
-- Dalamud's dev plugin loader can then be pointed directly at that folder, and it loads as if it was in the main repo, including accurate metadata + assembly version et cetera
+- They build, and an archive containing the plugin manifest, the DLL and dependencies is generated using the DalamudPackager build step
+- Dalamud's dev plugin loader can then be pointed directly at that archive, and it loads as if it was in the main repo, including accurate metadata + assembly version et cetera
 - They iterate as they please
 - They finish up, and push up their changes to a repo
 
@@ -199,8 +196,7 @@ For a new developer, the workflow should look something like this:
 - They pop over to `DalamudPluginManifests`, and create a [compliant manifest](#guide-level-explanation) under the `testing/unstable` subfolder, and generate a PR from that
 - The CI executes the action, which will:
   - Pull the `repository` at the specified `commit`
-  - Build the `csproj` at the `location`, or the root of the project if not available
-  - Run a standalone DalamudPackager to package up the build, and include the `changelog` from the manifest
+  - Build the `csproj` at the `location`, or the root of the project if not available, making sure to pass the `changelog` from the manifest as an environment variable for `DalamudPackager` to pick up
   - Publish the artifact for download on the PR, as well as provide a brief summary of what the CI was able to detect within the project (any risk factors, etc)
 - The goatcorp review team can then look over the repository, artifact and summary to make sure that the plugin meets requirements
 - If the PR is approved, the `owners` section of the manifest replaces GitHub usernames with GitHub user IDs + comments, the manifest is merged in, and the artifact will be deployed to `DalamudPlugins/testing/unstable/`, making it available for use
@@ -244,7 +240,7 @@ Several points within this DIP were discussed during Discord conversations. Here
 
 - <https://discord.com/channels/581875019861328007/860813266468732938/972255490128113684>
   - Concerns raised during this discussion:
-    - **Not every dev wants to use DalamudPackager**: they won't need to, but using it will make their life easier, as they will no longer need to maintain the JSON themselves, and what they build is the same thing that Dalamud will consume, and will match what the buildbot will build.
+    - **Not every dev wants to use DalamudPackager**: okay, so you technically don't _need_ to if you configure your project carefully, but your life and our life will be a lot easier if you do. Please let us know why you can't use it and we'll do our best to address your concerns.
     - **How will the Dalamud community benefit from these changes?** See [rationale-and-alternatives].
     - **Will this lock out projects with unconventional build processes?** Hopefully not; as long as the buildbot can build _a_ `csproj` and produce a DalamudPackager artifact at the end, it'll be happy. Other projects or steps are fine, just make sure they're not in the build path.
     - **What about build-time project dependencies that I rely on (e.g. external assets), but don't want goatcorp to build?** We have no immediate plans to support this. Unfortunately, this means our current answer is "build the dependency separately, and commit it into the repository to be picked up by the buildbot."
