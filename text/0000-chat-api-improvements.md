@@ -32,8 +32,7 @@ The time spent implementing this DIP is also a good opportunity to make minor im
 - The API would retain the same broad functionality as currently exists; users would be able to subscribe to the same message events, and be able to send their own chat log messages.  The differences are primarily in the information exposed to and controlled by the user:
 	- The timestamp parameter[^1] would be renamed to properly indicate its purpose.  It would also be made a `ref` in the events so that event handlers could alter it (most won't, but I see little reason to restrict this when it may be useful in rare cases).
 	- A parameter would be added to the chat events that indicates the source of the message (game, Dalamud, or plugin), with which subscribers can inform their decisions about handling the message.  A supplemental parameter would be added with the `InternalName` of the plugin for plugin-originating messages.
-- When a user uses `PrintChat`, a callback can be provided that receives the message index[^2][^3].
-- A new function would be added to set the content ID and world of a specific message's sender.  This is required for some context menu items to work when clicking on a message sender in the game's chat log.[^4].
+- When a user uses `PrintChat`, a callback can be provided that receives the message index[^2][^3].  This index does not matter to most API users, but is relevant when working with certain game chat functions.
 - XivChatType would have methods to mask the source/target/channel, possibly implicitly, to make use by uninformed devs less prone to error.[^5]
 
 
@@ -88,10 +87,10 @@ var chatEntry = new XivChatEntry
     Message = MyAwesomeTranslationFunction( "Check out my cool law blog!" ),
 };
 
-//  The callback makes all of the context menu items work on Bob's name in the message we just printed.
+//  The optional callback gives us an opportunity to do things that depend on the message index, such as setting sender information to make some context menu items functional.
 UInt32 messageIndex = mChatGui.PrintChat( chatEntry, msgIndex =>
 {
-    SetContentIDForMessage( bobsContentID, msgIndex, bobsServerID, XivChatType.Say );
+    RaptureLogModuleSetSenderInfo( bobsContentID, msgIndex, bobsServerID, XivChatType.Say );
 } );
 ```
 
@@ -99,13 +98,13 @@ UInt32 messageIndex = mChatGui.PrintChat( chatEntry, msgIndex =>
 
 [reference-level-explanation]: #reference-level-explanation
 
-**Implementation details are pending discussion of features, but are outlined as follows:**
-
-- All occurrances of sender ID fields and paramters are renamed to reflect that they are timestamps.
-- The majority of the logic in `ChatGui.HandlePrintMessageDetour` is split into a new function, with parameters for the chat message source.
-- The hook that redirected to that function will now redirect to a small function that calls the new `HandlePrintMessageDetour` with a message source of "Game".
-- The other `ChatGui` message printing functions will place messages into the queue with with the appropriate message source parameter(s), which will call the new `HandlePrintMessageDetour` function with those parameters.  Most likely, there will be both internal and external versions of the message queueing functions so that plugins cannot impersonate or otherwise abuse the message source.
+- All occurrances of sender ID fields and parameters are renamed to reflect that they are timestamps.
+- An enumeration for chat message source is created (`Game`, `Dalamud`, and `Plugin`).
+- The majority of the logic in `ChatGui.HandlePrintMessageDetour` is split into a new function, with parameters for the chat message source enum and plugin name.
+- The hook that redirected to that function will now redirect to a small function that calls the new `HandlePrintMessageDetour` with a message source of `Game`.
+- The other `ChatGui` message printing functions will place messages into the queue with with the appropriate message source parameter(s), which will call the new `HandlePrintMessageDetour` function with those parameters.  There will be both internal and public versions of the message queueing functions so that plugins cannot impersonate or otherwise abuse the message source.
 - When queueing a message to be printed, the user can provide a callback that receives the message index once printed (since it is returned by the game function that prints to log).
+- Add a note to the documentation for `PrintChat` that describes how available context menu entries are determined.  Those that require a content ID to be set will not be available from within the Dalamud API, requiring either Client Structs or manual invocation, depending on whether Client Structs even wants that function.
 - Fill in missing chat channel enums in `XivChatType`.
 - Add values to the enum for source/target flags, enabling combining enums for special case uses that may need it.[^5]
 - Implement extension methods for `XivChatType` that do the following:
@@ -117,7 +116,6 @@ UInt32 messageIndex = mChatGui.PrintChat( chatEntry, msgIndex =>
 [drawbacks]: #drawbacks
 
 - This would require either an API level change, which would breaking existing plugins, or adding bloat to Dalamud by implementing parallel API types, events, and methods to retain backward compatibility.  Timing these changes with the next Dalamud API level change is probably the better choice.
-- The function to set the content ID of a message sender may have the potential to be dangerous if misused.  It may not belong in Dalamud proper.
 - Changes to `XivChatType` have the potential to break existing plugins in more undesirable ways.  They also have the potential to confuse users selecting a chat channel in Dalamud/plugin settings, letting them select a channel that doesn't exist.  Devs will have to be mindful of this, depending on the changes made implementing this facet of the DIP.
 
 # Rationale and alternatives
@@ -138,10 +136,10 @@ As this is a change to an extant Dalamud API, and it is an API that's somewhat s
 
 [unresolved-questions]: #unresolved-questions
 
-- Should setting the content ID of a message be allowed through Dalamud, instead of through Client Structs or even requiring the user to hook it themselves?  How dangerous is it if a user mis-sets this data that is then used by the game to possibly contact the server (i.e., request the adventurer plate of a player from the chat window context menu)?  Should this feature be removed from the DIP?
-- Is it better to send the Content ID desired to be set as part of the message struct instead of having a callback with the index when printing the message?  It probably depends on what we decide for the above.  Regardless, the callback is more general-purpose, and the user can store it for other uses not envisioned here, so it may be the more future-resistant implementation.
+- Is asking the caller to supply a callback for receiving the message index the best way to handle the consumer getting that information?
 - Should the `parameter` parameter of the game's print to chat log function be RE'd in more detail as part of the implementation of this DIP?
-- Is providing a string parameter with the plugin name along with the message source (for plugin-sourced messages) the best idea?  Is there a better solution that still allows proper source discrimination?  Can we easily get the calling plugin's name inside of Dalamud (with reasonable performance) so that we don't have to trust plugins to set their name?
+- Should chat type in the chat events be made a ref?  Could be useful, but changing that also has the potential to cause some fuckery for certain types of messages.  So does changing the message sender if it's a player payload, though, and that's already a ref.
+- Is providing a string parameter with the plugin name along with the message source (for plugin-sourced messages) the best idea?  Is there a better solution that still allows proper source discrimination?  Can we easily get the calling plugin's name inside of Dalamud (with reasonable performance) so that we don't have to trust plugins to set their name?  The most obvious solution is `Assembly.GetCallingAssembly`.  How reliable is that, and how slow is it?  Are there better alternatives?
 - Is anyone from the the more experienced RE community available to help confirm game function behavior prior to implementation of changes to such a frequently-used API?
 - Would adding source/target values to the `XivChatType` enum cause issues for existing users?  I personally enumerate the enum values and put them in a dropdown, where having these values could potentially let a user make a bad decision.  I believe that Dalamud settings does this as well.  It is an easily resolvable problem if you know about it, but it could be a pitfall for uninformed plugin developers.
 - The other potential option for improving `XivChatType` is making it a struct with const values for the different channels, and methods/operators to handle the rest.  My gut feeling is that doing this could create unexpected surprises in existing plugins, and that extension methods on the existing enum are the better way forward (the downside being lack of implicit conversions and operators).  What is the best way to handle chat type masking, while avoiding pitfalls for newer developers?
@@ -157,6 +155,6 @@ As this is a fairly narrowly scoped DIP, the intent is to ensure that the change
 [^1]: This timestamp is currently called senderId in the API, leading to some confusion.  See [Dalamud PR #865](https://github.com/goatcorp/Dalamud/pull/865).
 [^2]: This is the `UInt32` index of the message in the game's log, and is used for some log-related game functions.  See the Reference-level explanation for more information.
 [^3]: It is unclear whether providing a message index to the caller is desirable for `Print` and `PrintError`, since those are simpler functions.  I don't personally see a drawback to allowing the caller to get that information if they want it, though.
-[^4]: This may have the potential to be dangerous if misused.  See Drawbacks and Unresolved questions.
+[^4]: REMOVED
 [^5]: This may cause issues with existing plugins and parts of Dalamud.  See Drawbacks and Unresolved questions.
 [^6]: It is intended that current plugin code continue to function as it exists, with only new parameters added in event handlers and the `SenderId` property name changed.  This conflicts somewhat with the `XivChatType` question in Unresolved questions.
