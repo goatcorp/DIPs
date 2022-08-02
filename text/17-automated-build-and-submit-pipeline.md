@@ -40,7 +40,8 @@ Each folder contains files that correspond to a submitted plugin, which is what 
 [plugin]
 # The open-source Git repository that your code is hosted on.
 # Must be visible to the external web, but doesn't have to be GitHub.
-# If `git clone` accepts it, it will work here.
+# If `git clone` accepts it, it will work here, with the caveat that it
+# must be accessible (i.e. no `git` or `ssh` URLs, as the agent cannot clone those)
 repository = "https://github.com/Philpax/plogonscript.git"
 # The commit to check out and build from the repository.
 commit = "9ef08248497c7f9f1312e14c50650183ee365734882a655345fc06abdac511f1"
