@@ -40,6 +40,8 @@ Each folder contains files that correspond to a submitted plugin, which is what 
 [plugin]
 # The open-source Git repository that your code is hosted on.
 # Must be visible to the external web, but doesn't have to be GitHub.
+# If `git clone` accepts it, it will work here, with the caveat that it
+# must be accessible (i.e. no `git` or `ssh` URLs, as the agent cannot clone those)
 repository = "https://github.com/Philpax/plogonscript.git"
 # The commit to check out and build from the repository.
 commit = "9ef08248497c7f9f1312e14c50650183ee365734882a655345fc06abdac511f1"
@@ -52,6 +54,10 @@ owners = [
 project_path = "plugin"
 # The changelog for this version. Will be shown in-game, as well on the Goat Place Discord.
 changelog = "added Herobrine"
+# Optional: the version of the plugin. If not present, the `<Version>` specified in the `csproj`
+# will be used. If this is specified, `<Version>` must not be specified - they are mutually
+# exclusive. This allows CI workflows to generate new manifests based on e.g. Git repo tags.
+version = "1.42.0"
 ```
 
 For this to work, the repository must be structured to be amenable to automatic builds and packaging, and it must be accessible to the CI pipeline (which in turn means it must be accessible to the public). Details of this will be covered in [reference-level-explanation].
@@ -242,7 +248,7 @@ This would form the backbone of any future CI we do around plugin submission. Id
 
 - Implementing a web frontend for the plugin submission/review/update process. Instead of manually PRing up changes to the metadata repo, a plugin developer could pop over to the frontend and specify which commit they'd like deployed, then hit the button.
 - Use bors-ng, or a relative, to handle approval of reviews to make it easier for people to review and merge plugin submissions/updates asynchronously
-- Run our own server to execute the CI actions on, so that we're not beholden to the free GHA organisation minute limit
+- Run our own server to execute the CI actions on, so that we're not beholden to the free GHA organisation minute limit. We technically have unlimited use, but it's unlimited in the way that all things are unlimited: right until you get a nice email from a GitHub employee telling you to stop doing that.
 - As we're building the code, we have an opportunity to analyse it and ensure that it isn't doing anything outright naughty. We would likely use a solution similar to [S&box](https://wiki.facepunch.com/sbox/AccessList)'s. This could be combined with other steps, like asking the plugin to declare the namespaces it will use.
   - This is pretty hard to verify when unsafe code is enabled, as all bets are off. This would be a relatively coarse check to make sure that there isn't anything _immediately_ suspect.
   - This is not an immediate problem as the plugin security model is currently too open to allow for it, anyway. It's something we can revisit in a future DIP.
