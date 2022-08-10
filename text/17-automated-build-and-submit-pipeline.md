@@ -52,6 +52,9 @@ owners = [
 # Optional: where your project/csproj is located within the repository.
 # If empty or unspecified, it will be assumed the project is in the root of the repository.
 project_path = "plugin"
+# Optional: where the images for the plugin (icon, plugin installer images, etc) are stored.
+# If empty or unspecified, it will be assumed that the images are in `/images` relative to the repository.
+images_path = "images"
 # The changelog for this version. Will be shown in-game, as well on the Goat Place Discord.
 changelog = "added Herobrine"
 # Optional: the version of the plugin. If not present, the `<Version>` specified in the `csproj`
@@ -82,7 +85,6 @@ This change would result in a new section being added to all `csproj`s that choo
         <Name>GatherBuddy</Name>
         <Punchline>Simplify Gathering and Fishing.</Punchline>
         <Description>Adds commands to simplify gathering by finding nodes and fish and their locations via item name and a UI to keep track of special uptime and weather conditions.</Description>
-        <IconUrl>https://raw.githubusercontent.com/Ottermandias/GatherBuddy/main/images/icon.png</IconUrl>
         <Tags>
             <Tag>Gathering</Tag>
             <Tag>Fishing</Tag>
@@ -96,8 +98,6 @@ This change would result in a new section being added to all `csproj`s that choo
     </DalamudPlugin>
 </ProjectExtensions>
 ```
-
-(Note that the `IconUrl` obeys current rules for asset URLs. More work might be done on this in the future.)
 
 When submitting a plugin for the first time, the developer creates the file with the relevant details filled in, and creates a PR. A GitHub Action will retrieve the repository at the specified commit, attempt to build it through the GitHub Actions server pool and produce an artifact (using the DalamudPackager build step) that can be downloaded and loaded into Dalamud for testing by a goatcorp plugin reviewer. If accepted, the PR is merged, and the artifact is deployed to DalamudPlugins.
 
