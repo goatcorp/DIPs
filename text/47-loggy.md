@@ -1,6 +1,6 @@
 - Feature Name: Loggy
 - Start Date: 2022-08-19
-- DIP PR: [goatcorp/DIPs#0000](https://github.com/goatcorp/DIPs/pull/0000)
+- DIP PR: [goatcorp/DIPs#47](https://github.com/goatcorp/DIPs/pull/47)
 - Repo-Relevant Issue: [goatcorp/dalamud#0000](https://github.com/goatcorp/dalamud/issues/0000)
 
 # Summary
