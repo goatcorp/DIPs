@@ -52,9 +52,6 @@ owners = [
 # Optional: where your project/csproj is located within the repository.
 # If empty or unspecified, it will be assumed the project is in the root of the repository.
 project_path = "plugin"
-# Optional: where the images for the plugin (icon, plugin installer images, etc) are stored.
-# If empty or unspecified, it will be assumed that the images are in `/images` relative to the repository.
-images_path = "images"
 # The changelog for this version. Will be shown in-game, as well on the Goat Place Discord.
 changelog = "added Herobrine"
 # Optional: the version of the plugin. If not present, the `<Version>` specified in the `csproj`
@@ -94,6 +91,20 @@ This change would result in a new section being added to all `csproj`s that choo
             <Tag>Alarms</Tag>
             <Tag>Timer</Tag>
         </Tags>
+        <!--
+          These images will be processed (conversion, resizing, etc) and copied to PluginDist.
+          The images specified here are authoritative, and the images will always be sourced
+          from the repository.
+
+          The CI will also check that this section is present and points to valid images, so
+          that developers won't be able to submit plugins without images.
+        -->
+        <Images>
+            <Icon>../assets/images/icon@2x.png</Icon>
+            <Marketing>../assets/images/marketing/hero.png</Marketing>
+            <Marketing>../assets/images/marketing/screenshot1.png</Marketing>
+            <Marketing>../assets/images/marketing/screenshot2.png</Marketing>
+        </Images>
         <Hidden>False</Hidden>
     </DalamudPlugin>
 </ProjectExtensions>
