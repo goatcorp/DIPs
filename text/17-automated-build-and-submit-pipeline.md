@@ -82,7 +82,6 @@ This change would result in a new section being added to all `csproj`s that choo
         <Name>GatherBuddy</Name>
         <Punchline>Simplify Gathering and Fishing.</Punchline>
         <Description>Adds commands to simplify gathering by finding nodes and fish and their locations via item name and a UI to keep track of special uptime and weather conditions.</Description>
-        <IconUrl>https://raw.githubusercontent.com/Ottermandias/GatherBuddy/main/images/icon.png</IconUrl>
         <Tags>
             <Tag>Gathering</Tag>
             <Tag>Fishing</Tag>
@@ -92,12 +91,24 @@ This change would result in a new section being added to all `csproj`s that choo
             <Tag>Alarms</Tag>
             <Tag>Timer</Tag>
         </Tags>
+        <!--
+          These images will be processed (conversion, resizing, etc) and copied to PluginDist.
+          The images specified here are authoritative, and the images will always be sourced
+          from the repository.
+
+          The CI will also check that this section is present and points to valid images, so
+          that developers won't be able to submit plugins without images.
+        -->
+        <Images>
+            <Icon>../assets/images/icon@2x.png</Icon>
+            <Marketing>../assets/images/marketing/hero.png</Marketing>
+            <Marketing>../assets/images/marketing/screenshot1.png</Marketing>
+            <Marketing>../assets/images/marketing/screenshot2.png</Marketing>
+        </Images>
         <Hidden>False</Hidden>
     </DalamudPlugin>
 </ProjectExtensions>
 ```
-
-(Note that the `IconUrl` obeys current rules for asset URLs. More work might be done on this in the future.)
 
 When submitting a plugin for the first time, the developer creates the file with the relevant details filled in, and creates a PR. A GitHub Action will retrieve the repository at the specified commit, attempt to build it through the GitHub Actions server pool and produce an artifact (using the DalamudPackager build step) that can be downloaded and loaded into Dalamud for testing by a goatcorp plugin reviewer. If accepted, the PR is merged, and the artifact is deployed to DalamudPlugins.
 
